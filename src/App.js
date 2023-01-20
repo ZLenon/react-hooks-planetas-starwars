@@ -1,9 +1,12 @@
 import React from 'react';
-import './App.css';
+import TablePlanets from './Components/TablePlanets';
 
 function App() {
   return (
-    <span>Hello, App!</span>
+    <>
+      <h1>STAR WARS</h1>
+      <TablePlanets />
+    </>
   );
 }
 
