@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from 'react';
-import { FiltersContext } from '../Context/FiltersContext';
+import React, { useContext, useEffect, useState } from 'react';
 import { PlanetsContext } from '../Context/PlanetsContext';
 import Loading from '../Components/Loading';
 
 function TablePlanets() {
-  const { fetchData, isLoading, erro } = useContext(PlanetsContext);
-  const { handleChange, planetsInfo, filterGlobal } = useContext(FiltersContext);
+  const { apiReturn, fetchData, isLoading, erro } = useContext(PlanetsContext);
+  const [planetsInfo, setPlanetsInfo] = useState({ namePlanet: '' });
+  const [filterGlobal, setFilterGlobal] = useState([]);
 
   useEffect(() => {
     const callBack = async () => {
@@ -13,6 +13,20 @@ function TablePlanets() {
     };
     callBack();
   }, []);
+
+  const handleChange = ({ target: { name, value } }) => {
+    setPlanetsInfo({
+      ...planetsInfo,
+      [name]: value,
+    });
+  };
+
+  useEffect(() => {
+    setFilterGlobal(
+      apiReturn.filter((data) => data.name.toLowerCase()
+        .includes(planetsInfo.namePlanet.toLowerCase())),
+    );
+  }, [planetsInfo, apiReturn]);
 
   return (
     <>
