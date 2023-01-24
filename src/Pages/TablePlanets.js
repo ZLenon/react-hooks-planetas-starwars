@@ -4,8 +4,11 @@ import Loading from '../Components/Loading';
 
 function TablePlanets() {
   const { apiReturn, fetchData, isLoading, erro } = useContext(PlanetsContext);
-  const [planetsInfo, setPlanetsInfo] = useState({ namePlanet: '' });
+  const [planetsName, setPlanetsName] = useState({ namePlanet: '' });
   const [filterGlobal, setFilterGlobal] = useState([]);
+  const [coluna, setColuna] = useState('population');
+  const [operador, setOperador] = useState('maior que');
+  const [numero, setNumero] = useState(0);
 
   useEffect(() => {
     const callBack = async () => {
@@ -15,18 +18,36 @@ function TablePlanets() {
   }, []);
 
   const handleChange = ({ target: { name, value } }) => {
-    setPlanetsInfo({
-      ...planetsInfo,
+    setPlanetsName({
+      ...planetsName,
       [name]: value,
     });
+  };
+
+  const handleClick = () => {
+    if (operador === 'maior que') {
+      setFilterGlobal(
+        apiReturn.filter((data) => Number(data[coluna]) > Number(numero)),
+      );
+    }
+    if (operador === 'menor que') {
+      setFilterGlobal(
+        apiReturn.filter((data) => data[coluna] <= numero),
+      );
+    }
+    if (operador === 'igual a') {
+      setFilterGlobal(
+        apiReturn.filter((data) => data[coluna] === numero),
+      );
+    }
   };
 
   useEffect(() => {
     setFilterGlobal(
       apiReturn.filter((data) => data.name.toLowerCase()
-        .includes(planetsInfo.namePlanet.toLowerCase())),
+        .includes(planetsName.namePlanet.toLowerCase())),
     );
-  }, [planetsInfo, apiReturn]);
+  }, [planetsName, apiReturn]);
 
   return (
     <>
@@ -36,10 +57,51 @@ function TablePlanets() {
           data-testid="name-filter"
           placeholder="Nome do Planeta"
           name="namePlanet"
-          value={ planetsInfo.namePlanet }
+          value={ planetsName.namePlanet }
           onChange={ handleChange }
         />
       </p>
+      <p>
+        Coluna:-
+        <select
+          data-testid="column-filter"
+          name="coluna"
+          onChange={ ({ target }) => setColuna(target.value) }
+        >
+          <option value="population">population</option>
+          <option value="orbital_period">orbital_period</option>
+          <option value="diameter">diameter</option>
+          <option value="rotation_period">rotation_period</option>
+          <option value="surface_water">surface_water</option>
+        </select>
+        Operador:-
+        <select
+          data-testid="comparison-filter"
+          name="operador"
+          onChange={ ({ target }) => setOperador(target.value) }
+        >
+          <option value="maior que">maior que</option>
+          <option value="menor que">menor que</option>
+          <option value="igual a">igual a</option>
+        </select>
+
+        <input
+          type="number"
+          data-testid="value-filter"
+          name="numero"
+          value={ numero }
+          onChange={ ({ target }) => setNumero(target.value) }
+        />
+
+        <button
+          type="button"
+          data-testid="button-filter"
+          onClick={ handleClick }
+        >
+          Filtrar
+        </button>
+      </p>
+
       <h1>Planetas</h1>
       {isLoading && <Loading />}
       {!!erro && <h3>erro</h3>}
