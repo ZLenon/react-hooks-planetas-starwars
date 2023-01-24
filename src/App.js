@@ -1,5 +1,5 @@
 import React from 'react';
-import TablePlanets from './Components/TablePlanets';
+import TablePlanets from './Pages/TablePlanets';
 
 function App() {
   return (

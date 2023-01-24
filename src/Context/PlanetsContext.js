@@ -18,7 +18,7 @@ function PlanetProvider({ children }) {
       delete dataResults.residents;
       setApiReturn(dataResults);
     } catch (error) {
-      setError(erro);
+      setError(error.mensage);
     } finally {
       setIsLoading(false);
     }
@@ -30,7 +30,7 @@ function PlanetProvider({ children }) {
       apiReturn,
       erro,
       fetchData,
-    }), [isLoading, apiReturn, erro, fetchData]);
+    }), [isLoading, apiReturn, erro]);
 
   return (
     <PlanetsContext.Provider value={ dataPlanets }>

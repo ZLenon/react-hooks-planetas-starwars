@@ -1,8 +1,11 @@
 import React, { useContext, useEffect } from 'react';
+import { FiltersContext } from '../Context/FiltersContext';
 import { PlanetsContext } from '../Context/PlanetsContext';
+import Loading from '../Components/Loading';
 
 function TablePlanets() {
-  const { apiReturn, fetchData } = useContext(PlanetsContext);
+  const { fetchData, isLoading, erro } = useContext(PlanetsContext);
+  const { handleChange, planetsInfo, filterGlobal } = useContext(FiltersContext);
 
   useEffect(() => {
     const callBack = async () => {
@@ -10,9 +13,22 @@ function TablePlanets() {
     };
     callBack();
   }, []);
+
   return (
     <>
+      <p>
+        <input
+          type="text"
+          data-testid="name-filter"
+          placeholder="Nome do Planeta"
+          name="namePlanet"
+          value={ planetsInfo.namePlanet }
+          onChange={ handleChange }
+        />
+      </p>
       <h1>Planetas</h1>
+      {isLoading && <Loading />}
+      {!!erro && <h3>erro</h3>}
       <table>
         <thead>
           <tr>
@@ -32,7 +48,7 @@ function TablePlanets() {
           </tr>
         </thead>
         {
-          apiReturn.map((data) => (
+          filterGlobal.map((data) => (
             <tbody key={ data.name }>
               <tr>
                 <td>{data.name}</td>
