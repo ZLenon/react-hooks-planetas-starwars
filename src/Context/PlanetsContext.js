@@ -30,7 +30,7 @@ function PlanetProvider({ children }) {
       apiReturn,
       erro,
       fetchData,
-    }), [isLoading, apiReturn, erro, fetchData]);
+    }), [isLoading, apiReturn, erro]);
 
   return (
     <PlanetsContext.Provider value={ dataPlanets }>
