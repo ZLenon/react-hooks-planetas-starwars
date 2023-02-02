@@ -16,7 +16,7 @@ function TablePlanets() {
   }, []);
 
   return (
-    <>
+    <section>
       {/* Tabela */}
       <h1>Planetas</h1>
       {isLoading && <Loading />}
@@ -38,10 +38,10 @@ function TablePlanets() {
             <th>URL</th>
           </tr>
         </thead>
-        {
-          filterGlobal.map((data) => (
-            <tbody key={ data.name }>
-              <tr>
+        <tbody>
+          {
+            filterGlobal.map((data) => (
+              <tr key={ data.name }>
                 <td>{data.name}</td>
                 <td>{data.rotation_period}</td>
                 <td>{data.orbital_period}</td>
@@ -56,11 +56,11 @@ function TablePlanets() {
                 <td>{data.edited}</td>
                 <td>{data.url}</td>
               </tr>
-            </tbody>
-          ))
-        }
+            ))
+          }
+        </tbody>
       </table>
-    </>
+    </section>
   );
 }
 

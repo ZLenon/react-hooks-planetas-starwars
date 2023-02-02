@@ -4,17 +4,15 @@ import { FilterContext } from '../Context/FilterContext';
 
 function Header() {
   const {
-    planetsName: { namePlanet },
-    handleNamePlanet,
+    inputFilter,
+    setInputFilter,
+    appliedFilters,
+    setAppliedFilters,
     colunas,
-    numero,
-    handleFilterClick,
     handleDelet,
     spanFilter,
     isShow,
-    setColuna,
-    setOperador,
-    setNumero,
+    setPlanetsName,
     setOrderColunm,
     handleOrdenerFilter,
   } = useContext(FilterContext);
@@ -27,8 +25,7 @@ function Header() {
           data-testid="name-filter"
           placeholder="Nome do Planeta"
           name="namePlanet"
-          value={ namePlanet }
-          onChange={ handleNamePlanet }
+          onChange={ ({ target }) => setPlanetsName(target.value) }
         />
       </p>
       <p>
@@ -36,7 +33,10 @@ function Header() {
         <select
           data-testid="column-filter"
           name="coluna"
-          onChange={ ({ target }) => setColuna(target.value) }
+          value={ inputFilter.column }
+          onChange={ ({ target }) => {
+            setInputFilter({ ...inputFilter, column: target.value });
+          } }
         >
           {colunas.map((colow, index) => (
             <option key={ index } value={ colow }>{ colow }</option>
@@ -47,7 +47,10 @@ function Header() {
         <select
           data-testid="comparison-filter"
           name="operador"
-          onChange={ ({ target }) => setOperador(target.value) }
+          value={ inputFilter.comparison }
+          onChange={ ({ target }) => {
+            setInputFilter({ ...inputFilter, comparison: target.value });
+          } }
         >
           <option value="maior que">maior que</option>
           <option value="menor que">menor que</option>
@@ -58,14 +61,18 @@ function Header() {
           type="number"
           data-testid="value-filter"
           name="numero"
-          value={ numero }
-          onChange={ ({ target }) => setNumero(target.value) }
+          value={ inputFilter.number }
+          onChange={ ({ target }) => {
+            setInputFilter({ ...inputFilter, number: target.value });
+          } }
         />
 
         <button
           type="button"
           data-testid="button-filter"
-          onClick={ handleFilterClick }
+          onClick={ () => {
+            setAppliedFilters([...appliedFilters, inputFilter]);
+          } }
         >
           Filtrar
         </button>
@@ -110,14 +117,14 @@ function Header() {
 
       {/* Span de filtros */}
       <ul>
-        {isShow && spanFilter.map((x, index, array) => (
+        {isShow && spanFilter.map((itens, index, array) => (
           <li key={ index }>
             {x}
             {console.log(array)}
             <button
               type="button"
               id="btnDelet"
-              onClick={ () => handleDelet(index) }
+              onClick={ () => handleDelet(itens, index) }
             >
               del
             </button>

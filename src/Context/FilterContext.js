@@ -7,80 +7,61 @@ export const FilterContext = createContext();
 function FilterProvider({ children }) {
   const { apiReturn, fetchData } = useContext(PlanetsContext);
   const [filterGlobal, setFilterGlobal] = useState([]);
-  const [planetsName, setPlanetsName] = useState({ namePlanet: '' });
-  const [coluna, setColuna] = useState('population');
+  const [planetsName, setPlanetsName] = useState('');
   const [colunas, setColunas] = useState(['population', 'orbital_period',
     'diameter', 'rotation_period', 'surface_water']);
-  const [operador, setOperador] = useState('maior que');
-  const [numero, setNumero] = useState(0);
   const [spanFilter, setSpanFilter] = useState([]);
   const [isShow, setIsShow] = useState(false);
   const [orderColunm, setOrderColunm] = useState(
     { order: { column: 'population', sort: 'ASC' } },
   );
+  const [inputFilter, setInputFilter] = useState({
+    column: 'population',
+    comparison: 'maior que',
+    number: '0',
+  });
+  const [appliedFilters, setAppliedFilters] = useState([]);
 
-  const handleNamePlanet = ({ target: { name, value } }) => {
-    setPlanetsName({
-      ...planetsName,
-      [name]: value,
-    });
-  };
-
-  const handleFilterClick = () => {
-    setIsShow(true);
-    if (operador === 'maior que') {
-      setFilterGlobal(
-        apiReturn.filter((data) => Number(data[coluna]) > Number(numero)),
-      );
-      setSpanFilter([
-        ...spanFilter,
-        `${coluna} ${operador} ${numero}`,
-      ]);
-      setColunas(
-        colunas.filter((col) => col !== coluna),
-      );
-      return;
-    }
-    if (operador === 'menor que') {
-      setFilterGlobal(
-        apiReturn.filter((data) => data[coluna] <= numero),
-      );
-      setSpanFilter([
-        ...spanFilter,
-        `${coluna} ${operador} ${numero}`,
-      ]);
-      setColunas(
-        colunas.filter((col) => col !== coluna),
-      );
-      return;
-    }
-    if (operador === 'igual a') {
-      setFilterGlobal(
-        apiReturn.filter((data) => data[coluna] === numero),
-      );
-      setSpanFilter([
-        ...spanFilter,
-        `${coluna} ${operador} ${numero}`,
-      ]);
-      setColunas(
-        colunas.filter((col) => col !== coluna),
-      );
-    }
-  };
-
+  /* DidUpDate */
   useEffect(() => {
     setFilterGlobal(
       apiReturn.filter((data) => data.name.toLowerCase()
-        .includes(planetsName.namePlanet.toLowerCase())),
+        .includes(planetsName.toLowerCase())),
     );
   }, [fetchData, planetsName]);
 
-  const handleDelet = (a) => {
+  useEffect(() => {
+    setIsShow(true);
+    /* Esse appliedFilters foi setado la no Header nos tres inputs principais */
+    const newArrayPlanet = appliedFilters.reduce((acc, curr) => (/* Acc é igual meu array inicial, curr é os itens que estao sendo percorridos */
+      acc.filter((planetsObj) => { /* ja que acc é o retorno da api setado como valor inicial se faz um filter entao planetsOBJ são cada obj planetas */
+        switch (curr.comparison) { /*  */
+        case 'maior que': {
+          return Number(planetsObj[curr.column]) > Number(curr.number);
+        }
+        case 'menor que': {
+          return Number(planetsObj[curr.column]) < Number(curr.number);
+        }
+
+        default: {
+          return Number(planetsObj[curr.column]) === Number(curr.number);
+        }
+        }
+      })
+    ), apiReturn);/* Definindo o retorno da api como estado inicial do REDUCE */
+    setFilterGlobal(newArrayPlanet); /* setando o retorno do reduce no filtro global */
+  }, [appliedFilters]);/* Escutando o stado dos tres inputs iniciais */
+
+  const handleDelet = (itens, index) => {
+    setFilterGlobal((prevState) => {
+      console.log(prevState);
+      return [];
+    });
+
     setSpanFilter(
-      spanFilter.filter((x, index) => index !== a),
+      spanFilter.filter((x, indexx) => indexx !== itens),
     );
-    setFilterGlobal(apiReturn.filter((x) => x === a));
-    /*  setColunas(colunas.filter((x) => x === a)); */
+    setColunas([...colunas, index.split(' ')[0]]);
   };
 
   const handleOrdenerFilter = () => {
@@ -89,30 +70,24 @@ function FilterProvider({ children }) {
 
   const dataFilters = useMemo(() => (
     {
+      inputFilter,
+      setInputFilter,
+      appliedFilters,
+      setAppliedFilters,
       filterGlobal,
-      planetsName,
-      handleNamePlanet,
-      coluna,
       colunas,
-      operador,
-      numero,
-      handleFilterClick,
       handleDelet,
       spanFilter,
       isShow,
       orderColunm,
-      setColuna,
-      setOperador,
-      setNumero,
+      setPlanetsName,
       setOrderColunm,
       handleOrdenerFilter,
     }), [
+    inputFilter,
+    appliedFilters,
     filterGlobal,
-    planetsName,
-    coluna,
     colunas,
-    operador,
-    numero,
     spanFilter,
     isShow,
     orderColunm,
