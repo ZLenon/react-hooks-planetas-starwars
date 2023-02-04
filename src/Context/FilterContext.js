@@ -8,7 +8,7 @@ function FilterProvider({ children }) {
   const { apiReturn, fetchData } = useContext(PlanetsContext);
   const [filterGlobal, setFilterGlobal] = useState([]);
   const [planetsName, setPlanetsName] = useState('');
-  const [colunas, setColunas] = useState(['population', 'orbital_period',
+  const [firstColunas, setFirstColunas] = useState(['population', 'orbital_period',
     'diameter', 'rotation_period', 'surface_water']);
   const [spanFilter, setSpanFilter] = useState([]);
   const [isShow, setIsShow] = useState(false);
@@ -20,19 +20,18 @@ function FilterProvider({ children }) {
     comparison: 'maior que',
     number: '0',
   });
-  const [appliedFilters, setAppliedFilters] = useState([]);
+  const [appliedFilters, setAppliedFilters] = useState([]);/* Filtros Aplicados */
 
   /* DidUpDate */
-  useEffect(() => {
+  useEffect(() => { /* Requisito 2 */
     setFilterGlobal(
       apiReturn.filter((data) => data.name.toLowerCase()
         .includes(planetsName.toLowerCase())),
     );
   }, [fetchData, planetsName]);
 
-  useEffect(() => {
-    setIsShow(true);
-    /* Esse appliedFilters foi setado la no Header nos tres inputs principais */
+  useEffect(() => { /* Requisito 3 */
+    /* Esse appliedFilters foi feito spread la no Header no button */
     const newArrayPlanet = appliedFilters.reduce((acc, curr) => (/* Acc é igual meu array inicial, curr é os itens que estao sendo percorridos */
       acc.filter((planetsObj) => { /* ja que acc é o retorno da api setado como valor inicial se faz um filter entao planetsOBJ são cada obj planetas */
         switch (curr.comparison) { /*  */
@@ -50,18 +49,33 @@ function FilterProvider({ children }) {
       })
     ), apiReturn);/* Definindo o retorno da api como estado inicial do REDUCE */
     setFilterGlobal(newArrayPlanet); /* setando o retorno do reduce no filtro global */
+    setSpanFilter(
+      [appliedFilters],
+    );
+    if (spanFilter.length === 0) {
+      setIsShow(false);
+    } else {
+      setIsShow(true);
+      const filter = firstColunas.filter((x) => x !== inputFilter.column);
+      setFirstColunas(
+        filter,
+      );
+      setInputFilter({
+        column: filter[0],
+        comparison: 'maior que',
+        number: '0',
+      });
+    }
   }, [appliedFilters]);/* Escutando o stado dos tres inputs iniciais */
 
   const handleDelet = (itens, index) => {
-    setFilterGlobal((prevState) => {
-      console.log(prevState);
-      return [];
-    });
-
-    setSpanFilter(
-      spanFilter.filter((x, indexx) => indexx !== itens),
+    setFirstColunas([
+      ...firstColunas,
+    ]);
+    setAppliedFilters(/* funcionando */
+      appliedFilters.filter((filtros) => filtros !== itens),
     );
-    setColunas([...colunas, index.split(' ')[0]]);
+    console.log(itens, index, appliedFilters);
   };
 
   const handleOrdenerFilter = () => {
@@ -75,7 +89,7 @@ function FilterProvider({ children }) {
       appliedFilters,
       setAppliedFilters,
       filterGlobal,
-      colunas,
+      firstColunas,
       handleDelet,
       spanFilter,
       isShow,
@@ -87,7 +101,7 @@ function FilterProvider({ children }) {
     inputFilter,
     appliedFilters,
     filterGlobal,
-    colunas,
+    firstColunas,
     spanFilter,
     isShow,
     orderColunm,

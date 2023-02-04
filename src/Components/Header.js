@@ -8,9 +8,8 @@ function Header() {
     setInputFilter,
     appliedFilters,
     setAppliedFilters,
-    colunas,
+    firstColunas,
     handleDelet,
-    spanFilter,
     isShow,
     setPlanetsName,
     setOrderColunm,
@@ -38,7 +37,7 @@ function Header() {
             setInputFilter({ ...inputFilter, column: target.value });
           } }
         >
-          {colunas.map((colow, index) => (
+          {firstColunas.map((colow, index) => (
             <option key={ index } value={ colow }>{ colow }</option>
           ))}
         </select>
@@ -117,10 +116,9 @@ function Header() {
 
       {/* Span de filtros */}
       <ul>
-        {isShow && spanFilter.map((itens, index, array) => (
+        {isShow && appliedFilters.map((itens, index) => (
           <li key={ index }>
-            {x}
-            {console.log(array)}
+            {`${itens.column} ${itens.comparison} ${itens.number}`}
             <button
               type="button"
               id="btnDelet"
