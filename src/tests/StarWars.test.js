@@ -49,7 +49,7 @@ describe('Star Wars Project', () => {
     const rowTable =  screen.getAllByRole('row');      
       expect(rowTable.length).toEqual(2)
   });
-  test('Testando o os segundo filtro', async ()=> {
+  test('Testando o os segundo filtro com filtro maior', async ()=> {
     render(
       <PlanetProvider>
         <FilterProvider>
@@ -89,5 +89,95 @@ describe('Star Wars Project', () => {
     userEvent.click(spanButton);
 
   });
-});
+  test('Testando o os segundo filtro com filtro menor', async ()=> {
+    render(
+      <PlanetProvider>
+        <FilterProvider>
+          <App />
+        </FilterProvider>
+      </PlanetProvider>,
+      );
+    await waitFor(()=> expect(global.fetch).toHaveBeenCalledTimes(1));
+    
+    await waitFor(()=>{
+      const rowTable =  screen.getAllByRole('row');      
+      expect(rowTable.length).toEqual(11)
+    });
 
+    const inputColuna = screen.getByTestId('column-filter');
+    userEvent.selectOptions(inputColuna, inputColuna[1]);
+
+    const inputOrder = screen.getByTestId('comparison-filter');
+    userEvent.selectOptions(inputOrder, inputOrder[1]);
+
+    const inputNumber = screen.getByTestId('value-filter');
+    userEvent.clear(inputNumber);
+    userEvent.type(inputNumber, '305');
+
+    const btnFiltrar = screen.getByRole('button', { name: /filtrar/i });
+    userEvent.click(btnFiltrar);
+
+    const rowTable =  screen.getAllByRole('row');    
+    expect(rowTable.length).toEqual(2);
+});
+test('Testando o os segundo filtro com filtro igual', async ()=> {
+  render(
+    <PlanetProvider>
+      <FilterProvider>
+        <App />
+      </FilterProvider>
+    </PlanetProvider>,
+    );
+  await waitFor(()=> expect(global.fetch).toHaveBeenCalledTimes(1));
+  
+  await waitFor(()=>{
+    const rowTable =  screen.getAllByRole('row');      
+    expect(rowTable.length).toEqual(11)
+  });
+  
+  const inputColuna = screen.getByTestId('column-filter');
+  userEvent.selectOptions(inputColuna, inputColuna[2]);
+
+  const inputOrder = screen.getByTestId('comparison-filter');
+  userEvent.selectOptions(inputOrder, inputOrder[2]);
+
+  const inputNumber = screen.getByTestId('value-filter');
+  userEvent.clear(inputNumber);
+  userEvent.type(inputNumber, '12120');
+
+  const btnFiltrar = screen.getByRole('button', { name: /filtrar/i });
+  userEvent.click(btnFiltrar);
+
+  const rowTable =  screen.getAllByRole('row');    
+  expect(rowTable.length).toEqual(2);
+});
+  test('Testando o os Terceiro filtro', async ()=> {
+    render(
+      <PlanetProvider>
+        <FilterProvider>
+          <App />
+        </FilterProvider>
+      </PlanetProvider>,
+      );
+    await waitFor(()=> expect(global.fetch).toHaveBeenCalledTimes(1));
+    
+    await waitFor(()=>{
+      const rowTable =  screen.getAllByRole('row');      
+      expect(rowTable.length).toEqual(11)
+    });
+    const dropFilter = screen.getByTestId('column-sort');
+    userEvent.selectOptions(dropFilter, dropFilter[2]);
+
+    const radioASC = screen.getByTestId('column-sort-input-asc');
+    userEvent.click(radioASC);
+
+    const radioDESC = screen.getByTestId('column-sort-input-desc');
+    userEvent.click(radioDESC);
+
+    const btnSort = screen.getByTestId('column-sort-button');
+    userEvent.click(btnSort);
+    
+    const btnRemoveFilters = screen.getByTestId('button-remove-filters');
+    userEvent.click(btnRemoveFilters);
+  });
+});

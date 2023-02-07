@@ -15,6 +15,9 @@ function Header() {
     setOrderColunm,
     handleOrdenerFilter,
     handleRemove,
+    orderColunm,
+    ordenedFilters,
+    setOrdenedFilters,
   } = useContext(FilterContext);
 
   return (
@@ -113,11 +116,18 @@ function Header() {
         <button
           type="button"
           data-testid="column-sort-button"
-          onClick={ handleOrdenerFilter }
+          onClick={ () => {
+            handleOrdenerFilter(
+              setOrdenedFilters({
+                ...ordenedFilters,
+                orderColunm,
+              }),
+            );
+          } }
+          /* setAppliedFilters([...appliedFilters, inputFilter]) */
         >
           Ordenar
         </button>
-
       </p>
 
       {/* Span de filtros */}

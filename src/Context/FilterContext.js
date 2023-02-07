@@ -21,6 +21,7 @@ function FilterProvider({ children }) {
     number: '0',
   });
   const [appliedFilters, setAppliedFilters] = useState([]);/* Filtros Aplicados */
+  const [ordenedFilters, setOrdenedFilters] = useState([]);
 
   /* DidUpDate */
   useEffect(() => { /* Requisito 2 */
@@ -32,6 +33,7 @@ function FilterProvider({ children }) {
 
   useEffect(() => { /* Requisito 3 */
     /* Esse appliedFilters foi feito spread la no Header no button */
+    /* inputFilter{ column: 'population', comparison: 'maior que', number: '0', } */
     const newArrayPlanet = appliedFilters.reduce((acc, curr) => (/* Acc é igual meu array inicial, curr é os itens que estao sendo percorridos */
       acc.filter((planetsObj) => { /* ja que acc é o retorno da api setado como valor inicial se faz um filter entao planetsOBJ são cada obj planetas */
         switch (curr.comparison) { /*  */
@@ -79,13 +81,13 @@ function FilterProvider({ children }) {
   };
 
   const handleOrdenerFilter = () => { /* Ordernar em ordem crescente e decrescente */
-    /* inputFilter */
-    if (orderColunm.sort === 'ASC') {
+    /* orderColunm { order: { column: 'population', sort: 'ASC' } } */
+    /*     if (orderColunm.sort === 'ASC') {
       filterGlobal.sort((a, b) => a - b);
     }
     if (orderColunm.sort === 'DESC') {
       filterGlobal.sort((a, b) => b - a);
-    }
+    } */
   };
 
   const handleRemove = () => { /* Remover filtros no spam e devolver valores a dropdow coluna */
@@ -110,6 +112,8 @@ function FilterProvider({ children }) {
       setOrderColunm,
       handleOrdenerFilter,
       handleRemove,
+      ordenedFilters,
+      setOrdenedFilters,
     }), [
     inputFilter,
     appliedFilters,
@@ -118,6 +122,7 @@ function FilterProvider({ children }) {
     spanFilter,
     isShow,
     orderColunm,
+    ordenedFilters,
   ]);
 
   return (
