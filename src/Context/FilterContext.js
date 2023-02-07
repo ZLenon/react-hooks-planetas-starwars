@@ -48,7 +48,7 @@ function FilterProvider({ children }) {
         }
       })
     ), apiReturn);/* Definindo o retorno da api como estado inicial do REDUCE */
-    setFilterGlobal(newArrayPlanet); /* setando o retorno do reduce no filtro global */
+    setFilterGlobal(newArrayPlanet); /* seta o retorno do reduce no filtro global */
     setSpanFilter(
       [appliedFilters],
     );
@@ -68,7 +68,7 @@ function FilterProvider({ children }) {
     }
   }, [appliedFilters]);/* Escutando o stado dos tres inputs iniciais */
 
-  const handleDelet = (itens, index) => {
+  const handleDelet = (itens, index) => { /* Remover Span de filtros */
     setFirstColunas([
       ...firstColunas,
     ]);
@@ -78,8 +78,20 @@ function FilterProvider({ children }) {
     console.log(itens, index, appliedFilters);
   };
 
-  const handleOrdenerFilter = () => {
-    console.log(orderColunm);
+  const handleOrdenerFilter = () => { /* Ordernar em ordem crescente e decrescente */
+    /* inputFilter */
+    if (orderColunm.sort === 'ASC') {
+      filterGlobal.sort((a, b) => a - b);
+    }
+    if (orderColunm.sort === 'DESC') {
+      filterGlobal.sort((a, b) => b - a);
+    }
+  };
+
+  const handleRemove = () => { /* Remover filtros no spam e devolver valores a dropdow coluna */
+    setAppliedFilters([]);
+    setFirstColunas(['population', 'orbital_period',
+      'diameter', 'rotation_period', 'surface_water']);
   };
 
   const dataFilters = useMemo(() => (
@@ -97,6 +109,7 @@ function FilterProvider({ children }) {
       setPlanetsName,
       setOrderColunm,
       handleOrdenerFilter,
+      handleRemove,
     }), [
     inputFilter,
     appliedFilters,

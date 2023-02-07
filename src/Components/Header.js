@@ -14,6 +14,7 @@ function Header() {
     setPlanetsName,
     setOrderColunm,
     handleOrdenerFilter,
+    handleRemove,
   } = useContext(FilterContext);
 
   return (
@@ -82,7 +83,8 @@ function Header() {
         <select
           data-testid="column-sort"
           name="ordenar"
-          onChange={ ({ target }) => setOrderColunm(target.value) }
+          onChange={ ({ target: { value } }) => setOrderColunm((prevState) => (
+            { order: { ...prevState.order, column: value } })) }
         >
           <option value="population">population</option>
           <option value="orbital_period">orbital_period</option>
@@ -94,15 +96,19 @@ function Header() {
         <input
           type="radio"
           name="sort"
+          value="ASC"
           data-testid="column-sort-input-asc"
-          onChange={ ({ target }) => setOrderColunm(target.value) }
+          onChange={ ({ target: { value } }) => setOrderColunm((prevState) => (
+            { order: { ...prevState.order, sort: value } })) }
         />
         Descendente:-
         <input
           type="radio"
           name="sort"
+          value="DESC"
           data-testid="column-sort-input-desc"
-          onChange={ ({ target }) => setOrderColunm(target.value) }
+          onChange={ ({ target: { value } }) => setOrderColunm((prevState) => (
+            { order: { ...prevState.order, sort: value } })) }
         />
         <button
           type="button"
@@ -117,7 +123,10 @@ function Header() {
       {/* Span de filtros */}
       <ul>
         {isShow && appliedFilters.map((itens, index) => (
-          <li key={ index }>
+          <li
+            key={ index }
+            data-testid="filter"
+          >
             {`${itens.column} ${itens.comparison} ${itens.number}`}
             <button
               type="button"
@@ -129,6 +138,16 @@ function Header() {
           </li>
         ))}
       </ul>
+
+      <p>
+        <button
+          type="button"
+          data-testid="button-remove-filters"
+          onClick={ handleRemove }
+        >
+          Remover Filtragens
+        </button>
+      </p>
     </header>
   );
 }
